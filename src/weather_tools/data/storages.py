@@ -1,19 +1,26 @@
-import json
+import pandas as pd
 from pathlib import Path
 
-test1 = [{'name': 'liwy', 'age': 20}, {'name': 'liwy2', 'age': 21}]
 
-root_dir = Path(__file__).resolve(
-).parent.parent.parent.parent.joinpath('data')
-if root_dir.exists():
-    csv_file = root_dir.joinpath('weather.csv')
-else:
-    Path.mkdir(root_dir)
-    csv_file = root_dir.joinpath('weather.csv')
+class DataStorage:
+    def __init__(self, storage_type: str = 'csv'):
+        self.storage_type = storage_type.lower()
+        self._storage_type_check(self.storage_type)
 
-print(csv_file)
+    def _storage_type_check(self, storage_type):
+        if storage_type not in ['csv', 'sqlite']:
+            raise ValueError('storage_type must be csv or sqlite')
 
-for i in test1:
-    with open(csv_file, 'a', encoding='utf-8') as f:
-        json.dump(i, f, ensure_ascii=False)
-        f.write('\n')
+    def save_csv(self, data: list,path: str = None):
+        if path is None:
+            root_dir = Path(__file__).resolve(
+            ).parent.parent.parent.parent.joinpath('dist')
+            if root_dir.exists():
+                csv_file = root_dir.joinpath('weather.csv')
+            else:
+                Path.mkdir(root_dir)
+                csv_file = root_dir.joinpath('weather.csv')
+        else:
+            csv_file = path
+        df = pd.DataFrame(data)
+        df.to_csv(csv_file, mode='a', header=not Path(csv_file).exists(), index=False)

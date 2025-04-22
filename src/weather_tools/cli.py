@@ -2,6 +2,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 from api.weather_api import WeatherAPI
+from data.storages import DataStorage
 
 # Load environment variables from.env file
 load_dotenv()
@@ -32,6 +33,7 @@ def init_args():
 if __name__ == '__main__':
     args = init_args()
     api = WeatherAPI(api_host, api_key)
+    storage_tool = DataStorage('csv')
     rtw = api.real_time_weather(
         args.location, lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
     for l in rtw:
@@ -40,3 +42,7 @@ if __name__ == '__main__':
     test = api.history_weather(args.location, date=args.date,
                                lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
     print(test)
+    for l in test:
+        for weatherHourly in l['weatherHourly']:
+            #storage_tool.save_csv(weatherHourly)
+            print(weatherHourly)
