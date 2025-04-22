@@ -18,6 +18,7 @@ def init_args():
     parser.add_argument('-a','--adm', type=str, default='shenzhen', help='The superior administrative division of a city')
     parser.add_argument('-u','--unit', type=str, default='m', help='Unit of measurement')
     parser.add_argument('-L','--lang', type=str, default='zh', help='Language')
+    parser.add_argument('-d','--date', type=int, default=1,choices=[1,2,3,4,5,6,7,8,9],help='show history weather')
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -27,3 +28,5 @@ if __name__ == '__main__':
     for l in rtw:
         for k,v in l['now'].items():
             print(k,':',v)
+    test = api.history_weather(args.location, date=args.date, lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
+    print(test)

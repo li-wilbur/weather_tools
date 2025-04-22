@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 
 class WeatherAPI:
     def __init__(self, api_host, api_key):
@@ -49,3 +50,21 @@ class WeatherAPI:
         except requests.RequestException as e:
             # 处理请求异常
             raise Exception(f'请求发生错误: {e}')
+
+    def history_weather(self, location,date,lang='zh', unit='m',range='cn',adm=None):
+        date = (datetime.date.today() - datetime.timedelta(days=date)).strftime("%Y%m%d")
+        urls = []
+        for location in self.geocode(location,lang=lang,range=range,adm=adm,):
+            location_code = location['id']
+            url = '{}/v7/historical/weather?'.format(self.api_host) + '&location={}'.format(location_code) + '&date={}'.format(date)
+            urls.append(url)
+        try:
+            # 发送 GET 请求
+            responses = [requests.get(url, headers=self.headers, timeout=10) for url in urls]
+            #responses.raise_for_status()  # 检查响应状态码，如果不是 200 会抛出异常
+            data = [response.json() for response in responses]  # 直接使用 requests 的 json 方法解析响应
+            return data
+        except requests.RequestException as e:
+            # 处理请求异常
+            raise Exception(f'请求发生错误: {e}')   
+
