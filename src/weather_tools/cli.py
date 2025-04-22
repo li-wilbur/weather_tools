@@ -7,7 +7,8 @@ from api.weather_api import WeatherAPI
 load_dotenv()
 api_host = os.getenv('api_host')
 api_key = os.getenv('api_key')
-
+if api_host is None or api_key is None:
+    raise ValueError("API host or key not found in environment variables")
 
 def init_args():
     parser = argparse.ArgumentParser(description='Weather API Client')
