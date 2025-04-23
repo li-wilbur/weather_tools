@@ -41,8 +41,8 @@ if __name__ == '__main__':
             print(k, ':', v)
     test = api.history_weather(args.location, date=args.date,
                                lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
-    print(test)
+
     for l in test:
         for weatherHourly in l['weatherHourly']:
-            #storage_tool.save_csv(weatherHourly)
-            print(weatherHourly)
+            storage_tool.save_csv(weatherHourly)
+
