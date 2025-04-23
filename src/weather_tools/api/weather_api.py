@@ -27,6 +27,7 @@ class WeatherAPI:
             data = response.json()  # 直接使用 requests 的 json 方法解析响应
             # print(len(data['location']))
             return data['location']
+            #return [location_info for location_info in data['location']]
         except requests.RequestException as e:
             # 处理请求异常
             raise Exception(f'请求发生错误: {e}')
@@ -39,22 +40,43 @@ class WeatherAPI:
 
     def real_time_weather(self, location, lang='zh', unit='m', range='cn', adm=None):
         urls = []
+        location_info = {}
         for location in self.geocode(location, lang=lang, range=range, adm=adm,):
-            location_code = location['id']
             url = '{}/v7/weather/now?'.format(self.api_host) + '&location={}'.format(
-                location_code) + '&lang={}'.format(lang) + '&unit={}'.format(unit)
+                location['id']) + '&lang={}'.format(lang) + '&unit={}'.format(unit)
             urls.append(url)
+            location['url'] = url
+            location_single = {
+                location['id'] : location
+            }
+            #print(location_single)
+            location_info.update(location_single)
+        #print(location_info)
         try:
+            resp_data = {}
             # 发送 GET 请求
-            responses = [requests.get(
-                url, headers=self.headers, timeout=10) for url in urls]
-            # responses.raise_for_status()  # 检查响应状态码，如果不是 200 会抛出异常
-            # 直接使用 requests 的 json 方法解析响应
-            data = [response.json() for response in responses]
-            return data
+            for single_url in location_info.values():
+                #print(single_url['url'])
+                resp = requests.get(single_url['url'], headers=self.headers, timeout=10).json()
+                #print(resp)
+                resp_single = {
+                    single_url['id'] : resp
+                }
+                resp_data.update(resp_single)
+            return resp_data
         except requests.RequestException as e:
-            # 处理请求异常
             raise Exception(f'请求发生错误: {e}')
+        # try:
+        #     # 发送 GET 请求
+        #     responses = [requests.get(
+        #         url, headers=self.headers, timeout=10) for url in urls]
+        #     # responses.raise_for_status()  # 检查响应状态码，如果不是 200 会抛出异常
+        #     # 直接使用 requests 的 json 方法解析响应
+        #     data = [response.json() for response in responses]
+        #     return data,location_info
+        # except requests.RequestException as e:
+        #     # 处理请求异常
+        #     raise Exception(f'请求发生错误: {e}')
 
     def history_weather(self, location, date, lang='zh', unit='m', range='cn', adm=None):
         date = (datetime.date.today() -

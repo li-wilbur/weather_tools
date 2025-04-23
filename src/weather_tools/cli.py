@@ -19,7 +19,7 @@ def init_args():
                         default='nanshan', help='Location name')
     parser.add_argument('-r', '--range', type=str,
                         default='cn', help='Range of locations')
-    parser.add_argument('-a', '--adm', type=str, default='shenzhen',
+    parser.add_argument('-a', '--adm', type=str, default=None,
                         help='The superior administrative division of a city')
     parser.add_argument('-u', '--unit', type=str,
                         default='m', help='Unit of measurement')
@@ -36,13 +36,16 @@ if __name__ == '__main__':
     storage_tool = DataStorage('csv')
     rtw = api.real_time_weather(
         args.location, lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
-    for l in rtw:
-        for k, v in l['now'].items():
-            print(k, ':', v)
-    test = api.history_weather(args.location, date=args.date,
-                               lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
-
-    for l in test:
-        for weatherHourly in l['weatherHourly']:
-            storage_tool.save_csv(weatherHourly)
+    print(rtw)
+    for k,v in rtw.items():
+        print(k, ':', v)
+    # for l in rtw[0]:
+    #     for k, v in l['now'].items():
+    #         print(k, ':', v)
+    # test = api.history_weather(args.location, date=args.date,
+    #                            lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
+    #
+    # for l in test:
+    #     for weatherHourly in l['weatherHourly']:
+    #         storage_tool.save_csv(weatherHourly)
 
