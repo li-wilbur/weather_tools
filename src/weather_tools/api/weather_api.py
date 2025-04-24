@@ -36,7 +36,7 @@ class WeatherAPI:
             # 处理其他异常
             raise Exception(f'发生未知错误: {e}')
 
-    def make_url(self, api, data, **kwargs):
+    def _make_url(self, api, data, **kwargs):
         """
         根据提供的 API 路径、位置数据和额外参数生成完整的请求 URL。
 
@@ -61,7 +61,7 @@ class WeatherAPI:
             location_info.update(location_single)
         return location_info
 
-    def api_request(self, location_info):
+    def _api_request(self, location_info):
         """
         向多个 URL 发送 GET 请求并返回响应数据。
 
@@ -104,8 +104,8 @@ class WeatherAPI:
         geo_data = self.geocode(location, lang=lang, geo_range=geo_range, adm=adm)
         # 调用 make_url 方法，根据地理编码数据和 API 路径生成完整的请求 URL
         # 调用 api_request 方法，向生成的 URL 发送请求并获取响应数据
-        location_info = self.make_url(api='/v7/weather/now?&location=', data=geo_data)
-        resp_data = self.api_request(location_info)
+        location_info = self._make_url(api='/v7/weather/now?&location=', data=geo_data)
+        resp_data = self._api_request(location_info)
         return resp_data
 
     def history_weather(self, location, date, lang='zh', unit='m', geo_range='cn', adm=None):
@@ -126,8 +126,8 @@ class WeatherAPI:
         # 调用 geocode 方法获取地理编码数据
         geo_data = self.geocode(location, lang=lang, geo_range=geo_range, adm=adm)
         # 生成历史天气API的请求URL
-        location_info = self.make_url(api='/v7/historical/weather?&location=', data=geo_data, date=date)
+        location_info = self._make_url(api='/v7/historical/weather?&location=', data=geo_data, date=date)
         # 发送API请求并获取响应数据
-        resp_data = self.api_request(location_info)
+        resp_data = self._api_request(location_info)
         return resp_data
 
