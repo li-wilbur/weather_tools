@@ -35,17 +35,16 @@ if __name__ == '__main__':
     api = WeatherAPI(api_host, api_key)
     storage_tool = DataStorage('csv')
     rtw = api.real_time_weather(
-        args.location, lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
+        args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
     print(rtw)
-    for k,v in rtw.items():
-        print(k, ':', v)
-    # for l in rtw[0]:
-    #     for k, v in l['now'].items():
-    #         print(k, ':', v)
-    # test = api.history_weather(args.location, date=args.date,
-    #                            lang=args.lang, unit=args.unit, range=args.range, adm=args.adm)
-    #
-    # for l in test:
-    #     for weatherHourly in l['weatherHourly']:
-    #         storage_tool.save_csv(weatherHourly)
+
+    test = api.history_weather(args.location, date=args.date,
+                               lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
+
+    print(test)
+    for k,v in test.items():
+        for weatherHourly in v['weatherHourly']:
+            weatherHourly['location'] = k
+            print(weatherHourly)
+            storage_tool.save_csv(weatherHourly)
 
