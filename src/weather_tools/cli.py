@@ -35,15 +35,16 @@ if __name__ == '__main__':
     api = WeatherAPI(api_host, api_key)
     storage_tool = DataStorage('csv')
     sw1 = SimpleView()
-    rtw = api.real_time_weather(
-        args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
-    print(rtw)
-    sw1.view(rtw)
+    # rtw = api.real_time_weather(
+    #     args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm='shenzhen')
+    # print(rtw)
+    # sw1.view(rtw)
 
-    # test = api.history_weather(args.location, date=args.date,
-    #                            lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
-    #
-    # print(test)
+    history1 = api.history_weather(args.location, date=args.date,
+                               lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
+
+    print(history1)
+    sw1.history_view(history1)
     # for k,v in test.items():
     #     for weatherHourly in v['weatherHourly']:
     #         weatherHourly['location'] = k

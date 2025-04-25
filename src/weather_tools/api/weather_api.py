@@ -129,5 +129,5 @@ class WeatherAPI:
         location_info = self._make_url(api='/v7/historical/weather?&location=', data=geo_data, date=date)
         # 发送API请求并获取响应数据
         resp_data = self._api_request(location_info)
-        return resp_data
+        return resp_data,location_info
 
