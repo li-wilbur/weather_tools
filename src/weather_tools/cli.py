@@ -45,9 +45,5 @@ if __name__ == '__main__':
 
     print(history1)
     sw1.history_view(history1)
-    # for k,v in test.items():
-    #     for weatherHourly in v['weatherHourly']:
-    #         weatherHourly['location'] = k
-    #         print(weatherHourly)
-    #         storage_tool.save_csv(weatherHourly)
+
 
