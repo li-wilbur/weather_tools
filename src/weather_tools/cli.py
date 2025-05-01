@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from api.weather_api import WeatherAPI
 from data.storages import DataStorage
-from view.simple_view import SimpleView
+#from view.simple_view import SimpleView
 # Load environment variables from.env file
 load_dotenv()
 api_host = os.getenv('api_host')
@@ -34,18 +34,20 @@ if __name__ == '__main__':
     args = init_args()
     api = WeatherAPI(api_host, api_key)
     storage_tool = DataStorage('csv')
-    sw1 = SimpleView()
-    # rtw = api.real_time_weather(
-    #     args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm='shenzhen')
-    # print(rtw)
+    #sw1 = SimpleView()
+    rtw = api.real_time_weather(
+        args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm='shenzhen')
+    print(rtw)
+    for l in rtw:
+        print(l)
     # sw1.view(rtw)
 
     history1 = api.history_weather(args.location, date=args.date,
-                               lang=args.lang, unit=args.unit, geo_range=args.range, adm=args.adm)
+                               lang=args.lang, unit=args.unit, geo_range=args.range, adm='shenzhen')
 
     print(history1)
-    sw1.history_view(history1)
-
+    # sw1.history_view(history1)
+    #
     # for k,v in history1[0].items():
     #     for weatherHourly in v['weatherHourly']:
     #         weatherHourly['location'] = k

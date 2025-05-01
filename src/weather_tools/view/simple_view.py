@@ -1,51 +1,66 @@
 class SimpleView:
-    def __init__(self, view_type='shell'):
+    def __init__(self, view_type):
         self.view_type = view_type
 
+    @staticmethod
+    def _city_view(data):
+        # print(data)
+        print('城市名称: {}'.format(data['name']))
+        print('城市ID: {}'.format(data['id']))
+        print('纬度: {}'.format(data['lat']))
+        print('经度: {}'.format(data['lon']))
+        print('所属省份: {}'.format(data['adm1']))
+        print('所属城市: {}'.format(data['adm2']))
+        print('时区: {}'.format(data['tz']))
+        print('天气类型: {}'.format(data['type']))
+        print('天气链接: {}'.format(data['fxLink']))
+        print('*' * 100)
 
-    def real_time_view(self,data):
-        """
-        显示天气数据的视图方法
-        Args:
-            data: 包含天气信息的数据字典
-        """
-        view_type = self.view_type
-        print(view_type)  # 打印视图类型
+    def simple_view(self, data, weather_type):
+        if weather_type == 'real_time':
+            return self.real_time_view(data)
+        elif weather_type == 'history':
+            return self.history_view(data)
+        else:
+            return None
 
-        # 遍历数据源中的值
-        for data_zip in zip(data[0].values(),data[1].values()):
-            print('#' * 20)
-            for single_data in data_zip:
+    def real_time_view(self, data):
+        for d in data:
+            for v in d.values():
                 try:
-                    # 尝试打印实时天气数据
-                    for k,v in single_data['now'].items():
-                        print(k,v)  # 打印键值对
+                    # print(v)
+                    now = v['now']
+                    print('*' * 100)
+                    print('时间: {}'.format(now['obsTime']))
+                    print('温度: {}°'.format(now['temp']))
+                    print('体感温度: {}°'.format(now['feelsLike']))
+                    print('天气状况: {}'.format(now['text']))
+                    print('风向: {}'.format(now['windDir']))
+                    print('风力: {}'.format(now['windScale']))
+                    print('风速: {}km/h'.format(now['windSpeed']))
+                    print('相对湿度: {}%'.format(now['humidity']))
+                    print('降水量: {}mm'.format(now['precip']))
+                    print('气压: {}hPa'.format(now['pressure']))
+                    print('能见度: {}km'.format(now['vis']))
+                    print('云量: {}%'.format(now['cloud']))
+
                 except KeyError:
-                    # 如果没有'now'键,直接打印整个字典
-                    for k,v in single_data.items():
-                        print(k,v)  # 打印键值对
+                    self._city_view(v)
 
-    def history_view(self,data):
-        """
-        显示历史天气数据的视图方法
-        Args:
-            data: 包含历史天气信息的数据字典,包括每日天气和逐小时天气数据
-        """
-        view_type = self.view_type
-        print(view_type)  # 打印视图类型
-
-        # 遍历数据源中的值
-        for data_zip in zip(data[0].values(),data[1].values()):
-            print('#' * 20)
-            for single_data in data_zip:
+    def history_view(self, data):
+        for d in data:
+            for v in d.values():
                 try:
-                    # 打印每日天气数据
-                    for k,v in single_data['weatherDaily'].items():
-                        print(k,v)  # 打印每日天气的键值对
-                    # 打印逐小时天气数据
-                    for hourly_data in single_data['weatherHourly']:
-                        print(hourly_data)  # 打印每小时天气数据
+                    weather_daily = v['weatherDaily']
+                    print('*' * 100)
+                    print('时间: {}'.format(weather_daily['date']))
+                    print('最高温: {}'.format(weather_daily['tempMax']))
+                    print('最低温: {}'.format(weather_daily['tempMin']))
+                    print('相对湿度: {}%'.format(weather_daily['humidity']))
+                    print('降水量: {}mm'.format(weather_daily['precip']))
+                    weather_hourly = v['weatherHourly']
+                    for h in weather_hourly:
+                        print(h)
+
                 except KeyError:
-                    # 如果数据结构不符合预期,直接打印整个字典
-                    for k,v in single_data.items():
-                        print(k,v)  # 打印键值对
+                    self._city_view(v)
