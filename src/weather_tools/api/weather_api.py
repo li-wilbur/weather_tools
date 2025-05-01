@@ -24,6 +24,8 @@ class WeatherAPI:
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()  # 检查响应状态码，如果不是 200 会抛出异常
             data = response.json()  # 直接使用 requests 的 json 方法解析响应
+            data['location'][0]['elapsed'] = response.elapsed.total_seconds()
+            #print(data['location'])
             # print(len(data['location']))
             return data['location']
         except requests.RequestException as e:
@@ -74,11 +76,16 @@ class WeatherAPI:
             # 遍历 location_info 中的每个位置信息
             for single_url in location_info.values():
                 # 发送 GET 请求并将响应数据解析为 JSON 格式
-                resp = requests.get(single_url['url'], headers=self.headers, timeout=10).json()
+                resp = requests.get(single_url['url'], headers=self.headers, timeout=10)
+                resp_json = resp.json()
+                resp_json['elapsed'] = resp.elapsed.total_seconds()
                 # 创建一个临时字典，键为位置 ID，值为对应的 API 响应数据
                 resp_single = {
-                    single_url['id']: resp
+                    single_url['id']: resp_json
+                    #single_url['elapsed']: resp.elapsed.total_seconds()
                 }
+                #print(resp_single)
+                #print(resp.elapsed.total_seconds())
                 # 将临时字典的内容更新到最终的响应数据字典中
                 resp_data.update(resp_single)
             return resp_data

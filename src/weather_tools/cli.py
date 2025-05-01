@@ -39,7 +39,8 @@ if __name__ == '__main__':
         args.location, lang=args.lang, unit=args.unit, geo_range=args.range, adm='shenzhen')
     print(rtw)
     for l in rtw:
-        print(l)
+        pass
+        #print(l)
     # sw1.view(rtw)
 
     history1 = api.history_weather(args.location, date=args.date,
